@@ -1,0 +1,29 @@
+name: Maintain HELLO WORLD contribution art
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'   # Every Sunday at 06:00 UTC
+  workflow_dispatch:        # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Full history so we can detect existing commits
+
+      - name: Configure git
+        run: |
+          git config user.name  "Contribution Art"
+          git config user.email "djzubah@gmail.com"
+
+      - name: Generate any missing commits
+        run: python generate_commits.py
+
+      - name: Push
+        run: git push origin main
